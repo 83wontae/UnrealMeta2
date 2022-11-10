@@ -45,6 +45,10 @@ AShootingGameCharacter::AShootingGameCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	ConstructorHelpers::FObjectFinder<UAnimMontage> montage(TEXT("AnimMontage'/Game/RifleAnimsetPro/Animations/InPlace/Rifle_ShootOnce_Montage.Rifle_ShootOnce_Montage'"));
+
+	AnimMontage = montage.Object;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,8 +78,23 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AShootingGameCharacter::OnResetVR);
+
+	// Shoot
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AShootingGameCharacter::PressShoot);
 }
 
+
+void AShootingGameCharacter::ReqShoot_Implementation()
+{
+	ResShoot();
+}
+
+void AShootingGameCharacter::ResShoot_Implementation()
+{
+	check(AnimMontage);
+
+	PlayAnimMontage(AnimMontage);
+}
 
 void AShootingGameCharacter::OnResetVR()
 {
@@ -96,6 +115,11 @@ void AShootingGameCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector
 void AShootingGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		StopJumping();
+}
+
+void AShootingGameCharacter::PressShoot()
+{
+	ReqShoot();
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)

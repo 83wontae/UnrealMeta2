@@ -29,6 +29,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	UAnimMontage* AnimMontage;
+
+	UFUNCTION(Server, Reliable)
+	void ReqShoot();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ResShoot();
+
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -57,6 +65,8 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+
+	void PressShoot();
 
 protected:
 	// APawn interface
