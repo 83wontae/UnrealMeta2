@@ -21,6 +21,10 @@ class AShootingGameCharacter : public ACharacter
 public:
 	AShootingGameCharacter();
 
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -32,10 +36,10 @@ public:
 	UAnimMontage* AnimMontage;
 
 	UFUNCTION(Server, Reliable)
-	void ReqShoot();
+	void ReqPressTrigger();
 
 	UFUNCTION(NetMulticast, Reliable)
-	void ResShoot();
+	void ResPressTrigger();
 
 protected:
 
@@ -66,7 +70,7 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
-	void PressShoot();
+	void PressTrigger();
 
 protected:
 	// APawn interface
@@ -78,5 +82,21 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE float GetControlPitch() const { return ControlPitch; }
+
+	UFUNCTION(BlueprintCallable)
+	AActor* SetEquipWeapon(AActor* Weapon);
+
+	UFUNCTION(BlueprintCallable)
+	void OnNotifyShoot();
+
+private:
+	UPROPERTY()
+	AActor* EquipWeapon;
+
+	UPROPERTY(Replicated)
+	float ControlPitch;
 };
 

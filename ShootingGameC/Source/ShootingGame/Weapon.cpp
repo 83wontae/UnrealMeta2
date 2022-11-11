@@ -2,6 +2,8 @@
 
 
 #include "Weapon.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -26,5 +28,15 @@ void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AWeapon::PressTrigger_Implementation()
+{
+	OwnChar->PlayAnimMontage(AnimMontage_Shoot);
+}
+
+void AWeapon::NotifyShoot_Implementation()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireEffect, Mesh->GetSocketLocation("Muzzle"), Mesh->GetSocketRotation("Muzzle"), FVector(0.3f, 0.3f, 0.3f));
 }
 

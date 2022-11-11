@@ -8,6 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "WeaponInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCharacter
@@ -51,6 +53,23 @@ AShootingGameCharacter::AShootingGameCharacter()
 	AnimMontage = montage.Object;
 }
 
+void AShootingGameCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (HasAuthority() == true)
+	{
+		ControlPitch = GetControlRotation().Pitch;
+	}
+}
+
+void AShootingGameCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AShootingGameCharacter, ControlPitch);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -80,20 +99,38 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AShootingGameCharacter::OnResetVR);
 
 	// Shoot
-	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AShootingGameCharacter::PressShoot);
+	PlayerInputComponent->BindAction("Trigger", IE_Pressed, this, &AShootingGameCharacter::PressTrigger);
 }
 
-
-void AShootingGameCharacter::ReqShoot_Implementation()
+AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
 {
-	ResShoot();
+	EquipWeapon = Weapon;
+	return EquipWeapon;
 }
 
-void AShootingGameCharacter::ResShoot_Implementation()
+void AShootingGameCharacter::OnNotifyShoot()
 {
-	check(AnimMontage);
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
 
-	PlayAnimMontage(AnimMontage);
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_NotifyShoot(EquipWeapon);
+	}
+}
+
+void AShootingGameCharacter::ReqPressTrigger_Implementation()
+{
+	ResPressTrigger();
+}
+
+void AShootingGameCharacter::ResPressTrigger_Implementation()
+{
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_PressTrigger(EquipWeapon);
+	}
 }
 
 void AShootingGameCharacter::OnResetVR()
@@ -117,9 +154,9 @@ void AShootingGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector
 		StopJumping();
 }
 
-void AShootingGameCharacter::PressShoot()
+void AShootingGameCharacter::PressTrigger()
 {
-	ReqShoot();
+	ReqPressTrigger();
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
