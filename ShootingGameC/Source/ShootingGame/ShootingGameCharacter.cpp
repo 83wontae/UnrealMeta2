@@ -100,6 +100,9 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Shoot
 	PlayerInputComponent->BindAction("Trigger", IE_Pressed, this, &AShootingGameCharacter::PressTrigger);
+
+	// TestKey
+	PlayerInputComponent->BindAction("TestKey", IE_Pressed, this, &AShootingGameCharacter::PressTestKey);
 }
 
 AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
@@ -157,6 +160,10 @@ void AShootingGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector
 void AShootingGameCharacter::PressTrigger()
 {
 	ReqPressTrigger();
+}
+
+void AShootingGameCharacter::PressTestKey()
+{
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)

@@ -72,6 +72,8 @@ protected:
 
 	void PressTrigger();
 
+	void PressTestKey();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
