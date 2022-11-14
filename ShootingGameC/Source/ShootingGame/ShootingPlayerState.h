@@ -14,6 +14,9 @@ class SHOOTINGGAME_API AShootingPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
+public:
+	AShootingPlayerState();
+
 protected:
 	UPROPERTY(ReplicatedUsing = OnRep_CurHp)
 	float CurHp;
@@ -21,4 +24,7 @@ protected:
 public:
 	UFUNCTION()
 	void OnRep_CurHp();
+
+	UFUNCTION(BlueprintCallable)
+	void AddDamage(float Damage);
 };

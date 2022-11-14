@@ -3,6 +3,8 @@
 
 #include "ShootingPlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
+#include "ShootingGameHUD.h"
 
 void AShootingPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
@@ -11,7 +13,29 @@ void AShootingPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty 
 	DOREPLIFETIME(AShootingPlayerState, CurHp);
 }
 
+AShootingPlayerState::AShootingPlayerState()
+{
+	CurHp = 100.0f;
+}
+
 void AShootingPlayerState::OnRep_CurHp()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("OnRep_CurHp = %f"), CurHp));
+
+	APlayerController* pc = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (pc)
+	{
+		AShootingGameHUD* hud = Cast<AShootingGameHUD>(pc->GetHUD());
+		if (hud)
+		{
+			hud->OnUpdateMyHp(CurHp);
+		}
+	}
+}
+
+void AShootingPlayerState::AddDamage(float Damage)
+{
+	CurHp = CurHp - Damage;
+
+	OnRep_CurHp();
 }

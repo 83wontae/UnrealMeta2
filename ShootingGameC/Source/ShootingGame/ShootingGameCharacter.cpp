@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "WeaponInterface.h"
+#include "ShootingPlayerState.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCharacter
@@ -164,6 +165,13 @@ void AShootingGameCharacter::PressTrigger()
 
 void AShootingGameCharacter::PressTestKey()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("PressTestKey")));
+
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (ps)
+	{
+		ps->AddDamage(10.0f);
+	}
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
