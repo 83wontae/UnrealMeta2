@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "ShootingPlayerState.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_TwoParams(FDele_Multi_UpdateHp_TwoParams, float, float);
 /**
  * 
  */
@@ -21,10 +22,25 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_CurHp)
 	float CurHp;
 
+	UPROPERTY(ReplicatedUsing = OnRep_MaxHp)
+	float MaxHp;
+
+public:
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE float GetCurHp() const { return CurHp; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE float GetMaxHp() const { return MaxHp; }
+
 public:
 	UFUNCTION()
 	void OnRep_CurHp();
 
+	UFUNCTION()
+	void OnRep_MaxHp();
+
 	UFUNCTION(BlueprintCallable)
 	void AddDamage(float Damage);
+
+	FDele_Multi_UpdateHp_TwoParams Fuc_Dele_UpdateHp_TwoParams;
 };

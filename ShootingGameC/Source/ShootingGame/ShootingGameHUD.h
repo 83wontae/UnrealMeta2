@@ -23,12 +23,15 @@ public:
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void OnUpdateMyHp(float CurrentHp);
+	void OnUpdateMyHp(float CurrentHp, float MaxHp);
 
-	void OnUpdateMyHp_Implementation(float CurrentHp);
+	void OnUpdateMyHp_Implementation(float CurrentHp, float MaxHp);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void BindPlayerState();
+
+	FTimerHandle th_BindPlayerState;
 };
