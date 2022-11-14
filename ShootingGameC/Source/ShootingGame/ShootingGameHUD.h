@@ -21,6 +21,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UUserWidget* HudWidget;
 
+public:
+	UFUNCTION(BlueprintNativeEvent)
+	void OnUpdateMyHp(float CurrentHp);
+
+	void OnUpdateMyHp_Implementation(float CurrentHp);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
