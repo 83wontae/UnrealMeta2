@@ -25,6 +25,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -74,6 +76,8 @@ protected:
 
 	void PressTestKey();
 
+	void TestSetOwnerWeapon();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -95,10 +99,12 @@ public:
 	void OnNotifyShoot();
 
 private:
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	AActor* EquipWeapon;
 
 	UPROPERTY(Replicated)
 	float ControlPitch;
+
+	FTimerHandle th_SetOwnerWeapon;
 };
 

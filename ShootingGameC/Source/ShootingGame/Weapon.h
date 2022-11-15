@@ -36,15 +36,19 @@ public:
 	virtual void NotifyShoot_Implementation() override;
 
 public:
+	UFUNCTION(Server, Reliable)
+	void ReqShoot(const FVector vStart, const FVector vEnd);
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	ACharacter* OwnChar;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	UAnimMontage* AnimMontage_Shoot;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	UParticleSystem* FireEffect;
 };

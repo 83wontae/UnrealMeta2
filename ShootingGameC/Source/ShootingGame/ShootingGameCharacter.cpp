@@ -11,6 +11,8 @@
 #include "Net/UnrealNetwork.h"
 #include "WeaponInterface.h"
 #include "ShootingPlayerState.h"
+#include "Weapon.h"
+#include "TimerManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCharacter
@@ -64,11 +66,26 @@ void AShootingGameCharacter::Tick(float DeltaTime)
 	}
 }
 
+float AShootingGameCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, 
+		FString::Printf(TEXT("TakeDamage Damage=%f EventInstigator=%s"), DamageAmount, *EventInstigator->GetName()));
+
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (ps)
+	{
+		ps->AddDamage(DamageAmount);
+	}
+
+	return 0.0f;
+}
+
 void AShootingGameCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AShootingGameCharacter, ControlPitch);
+	DOREPLIFETIME(AShootingGameCharacter, EquipWeapon);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -109,6 +126,8 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
 {
 	EquipWeapon = Weapon;
+	TestSetOwnerWeapon();
+
 	return EquipWeapon;
 }
 
@@ -172,6 +191,26 @@ void AShootingGameCharacter::PressTestKey()
 	{
 		ps->AddDamage(10.0f);
 	}
+}
+
+void AShootingGameCharacter::TestSetOwnerWeapon()
+{
+	if (IsValid(GetController()))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, 
+			FString::Printf(TEXT("SetOwnerComplate!!! Owner : %s"), *GetController()->GetName()));
+
+		EquipWeapon->SetOwner(GetController());
+		AWeapon* weapon = Cast<AWeapon>(EquipWeapon);
+		if (weapon)
+		{
+			weapon->OwnChar = this;
+		}
+		return;
+	}
+
+	FTimerManager& timerManager = GetWorld()->GetTimerManager();
+	timerManager.SetTimer(th_SetOwnerWeapon, this, &AShootingGameCharacter::TestSetOwnerWeapon, 0.1f, false);
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
