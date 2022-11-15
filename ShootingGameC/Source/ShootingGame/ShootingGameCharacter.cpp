@@ -13,6 +13,8 @@
 #include "ShootingPlayerState.h"
 #include "Weapon.h"
 #include "TimerManager.h"
+#include "Blueprint/UserWidget.h"
+#include "NameTagInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AShootingGameCharacter
@@ -54,6 +56,13 @@ AShootingGameCharacter::AShootingGameCharacter()
 	ConstructorHelpers::FObjectFinder<UAnimMontage> montage(TEXT("AnimMontage'/Game/RifleAnimsetPro/Animations/InPlace/Rifle_ShootOnce_Montage.Rifle_ShootOnce_Montage'"));
 
 	AnimMontage = montage.Object;
+}
+
+void AShootingGameCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	BindPlayerState();
 }
 
 void AShootingGameCharacter::Tick(float DeltaTime)
@@ -141,6 +150,10 @@ void AShootingGameCharacter::OnNotifyShoot()
 	}
 }
 
+void AShootingGameCharacter::OnUpdateHp_Implementation(float CurrentHp, float MaxHp)
+{
+}
+
 void AShootingGameCharacter::ReqPressTrigger_Implementation()
 {
 	ResPressTrigger();
@@ -211,6 +224,20 @@ void AShootingGameCharacter::TestSetOwnerWeapon()
 
 	FTimerManager& timerManager = GetWorld()->GetTimerManager();
 	timerManager.SetTimer(th_SetOwnerWeapon, this, &AShootingGameCharacter::TestSetOwnerWeapon, 0.1f, false);
+}
+
+void AShootingGameCharacter::BindPlayerState()
+{
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (IsValid(ps))
+	{
+		ps->Fuc_Dele_UpdateHp_TwoParams.AddUFunction(this, FName("OnUpdateHp"));
+		OnUpdateHp(ps->GetCurHp(), ps->GetMaxHp());
+		return;
+	}
+
+	FTimerManager& timerManager = GetWorld()->GetTimerManager();
+	timerManager.SetTimer(th_BindPlayerState, this, &AShootingGameCharacter::BindPlayerState, 0.1f, false);
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)

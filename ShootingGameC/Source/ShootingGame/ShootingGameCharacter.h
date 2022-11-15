@@ -22,6 +22,9 @@ public:
 	AShootingGameCharacter();
 
 public:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -78,6 +81,8 @@ protected:
 
 	void TestSetOwnerWeapon();
 
+	void BindPlayerState();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -98,6 +103,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnNotifyShoot();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnUpdateHp(float CurrentHp, float MaxHp);
+
+	void OnUpdateHp_Implementation(float CurrentHp, float MaxHp);
+
 private:
 	UPROPERTY(Replicated)
 	AActor* EquipWeapon;
@@ -106,5 +116,14 @@ private:
 	float ControlPitch;
 
 	FTimerHandle th_SetOwnerWeapon;
+
+	FTimerHandle th_BindPlayerState;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UUserWidget> NameTagWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	UUserWidget* NameTagWidget;
 };
 
