@@ -56,6 +56,8 @@ AShootingGameCharacter::AShootingGameCharacter()
 	ConstructorHelpers::FObjectFinder<UAnimMontage> montage(TEXT("AnimMontage'/Game/RifleAnimsetPro/Animations/InPlace/Rifle_ShootOnce_Montage.Rifle_ShootOnce_Montage'"));
 
 	AnimMontage = montage.Object;
+
+	IsRagdoll = false;
 }
 
 void AShootingGameCharacter::BeginPlay()
@@ -152,6 +154,33 @@ void AShootingGameCharacter::OnNotifyShoot()
 
 void AShootingGameCharacter::OnUpdateHp_Implementation(float CurrentHp, float MaxHp)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+		FString::Printf(TEXT("OnUpdateHp CurrentHp : %f"), CurrentHp));
+
+	if (CurrentHp <= 0)
+	{
+		DoRagdoll();
+	}
+}
+
+void AShootingGameCharacter::DoRagdoll()
+{
+	IsRagdoll = true;
+
+	GetMesh()->SetSimulatePhysics(true);
+}
+
+void AShootingGameCharacter::DoGetup()
+{
+	IsRagdoll = false;
+
+	GetMesh()->SetSimulatePhysics(false);
+
+	GetMesh()->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	FVector loc = { 0.0f, 0.0f, -97.0f };
+	FRotator Rot = { 0.0f, 270.0f, 0.0f };
+	GetMesh()->SetRelativeLocationAndRotation(loc, Rot);
 }
 
 void AShootingGameCharacter::ReqPressTrigger_Implementation()
@@ -169,6 +198,23 @@ void AShootingGameCharacter::ResPressTrigger_Implementation()
 	}
 }
 
+void AShootingGameCharacter::ReqPressC_Implementation()
+{
+	ResPressC();
+}
+
+void AShootingGameCharacter::ResPressC_Implementation()
+{
+	if (IsRagdoll)
+	{
+		DoGetup();
+	}
+	else
+	{
+		DoRagdoll();
+	}
+}
+
 void AShootingGameCharacter::OnResetVR()
 {
 	// If ShootingGame is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in ShootingGame.Build.cs is not automatically propagated
@@ -182,12 +228,12 @@ void AShootingGameCharacter::OnResetVR()
 
 void AShootingGameCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		Jump();
+	Jump();
 }
 
 void AShootingGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		StopJumping();
+	StopJumping();
 }
 
 void AShootingGameCharacter::PressTrigger()
@@ -199,11 +245,7 @@ void AShootingGameCharacter::PressTestKey()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("PressTestKey")));
 
-	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
-	if (ps)
-	{
-		ps->AddDamage(10.0f);
-	}
+	ReqPressC();
 }
 
 void AShootingGameCharacter::TestSetOwnerWeapon()

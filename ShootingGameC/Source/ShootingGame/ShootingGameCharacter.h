@@ -46,6 +46,12 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void ResPressTrigger();
 
+	UFUNCTION(Server, Reliable)
+	void ReqPressC();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ResPressC();
+
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -108,12 +114,20 @@ public:
 
 	void OnUpdateHp_Implementation(float CurrentHp, float MaxHp);
 
+	UFUNCTION(BlueprintCallable)
+	void DoRagdoll();
+
+	UFUNCTION(BlueprintCallable)
+	void DoGetup();
+
 private:
 	UPROPERTY(Replicated)
 	AActor* EquipWeapon;
 
 	UPROPERTY(Replicated)
 	float ControlPitch;
+
+	bool IsRagdoll;
 
 	FTimerHandle th_SetOwnerWeapon;
 
