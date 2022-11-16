@@ -31,4 +31,14 @@ public:
 	void NotifyShoot();
 
 	virtual void NotifyShoot_Implementation() {};
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void PressReload();
+
+	virtual void PressReload_Implementation() {};
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void IsCanUse(bool& IsCanUse);
+
+	virtual void IsCanUse_Implementation(bool& IsCanUse) {};
 };

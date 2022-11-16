@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/AudioComponent.h"
+#include "ShootingGameHUD.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -23,7 +24,8 @@ AWeapon::AWeapon()
 
 	bReplicates = true;
 	SetReplicateMovement(true);
-	bNetUseOwnerRelevancy = true;
+
+	Ammo = 30;
 }
 
 void AWeapon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -32,8 +34,10 @@ void AWeapon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetim
 
 	DOREPLIFETIME(AWeapon, OwnChar);
 	DOREPLIFETIME(AWeapon, AnimMontage_Shoot);
+	DOREPLIFETIME(AWeapon, AnimMontage_Reload);
 	DOREPLIFETIME(AWeapon, FireEffect);
 	DOREPLIFETIME(AWeapon, SoundBase);
+	DOREPLIFETIME(AWeapon, Ammo);
 }
 
 // Called when the game starts or when spawned
@@ -71,6 +75,44 @@ void AWeapon::NotifyShoot_Implementation()
 		FVector end = (forward * 5000) + shooter->PlayerCameraManager->GetCameraLocation();
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Client - ReqShoot")));
 		ReqShoot(start, end);
+	}
+}
+
+void AWeapon::PressReload_Implementation()
+{
+	OwnChar->PlayAnimMontage(AnimMontage_Reload);
+}
+
+void AWeapon::IsCanUse_Implementation(bool& IsCanUse)
+{
+	if (Ammo <= 0)
+	{
+		IsCanUse = false;
+		return;
+	}
+
+	Ammo = Ammo - 1;
+	IsCanUse = true;
+	OnRep_Ammo();
+}
+
+void AWeapon::OnRep_Ammo()
+{
+	UpdateAmmoToHud();
+}
+
+void AWeapon::UpdateAmmoToHud()
+{
+	//UI 출력 연결
+	APlayerController* firstPlayer = GetWorld()->GetFirstPlayerController();
+
+	if (OwnChar->GetController() == firstPlayer)
+	{
+		AShootingGameHUD* Hud = Cast<AShootingGameHUD>(firstPlayer->GetHUD());
+		if (IsValid(Hud))
+		{
+			Hud->OnUpdateMyAmmo(Ammo);
+		}
 	}
 }
 

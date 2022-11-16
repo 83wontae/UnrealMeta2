@@ -35,9 +35,25 @@ public:
 
 	virtual void NotifyShoot_Implementation() override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void PressReload();
+
+	virtual void PressReload_Implementation() override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void IsCanUse(bool& IsCanUse);
+
+	virtual void IsCanUse_Implementation(bool& IsCanUse) override;
+
 public:
 	UFUNCTION(Server, Reliable)
 	void ReqShoot(const FVector vStart, const FVector vEnd);
+
+	UFUNCTION()
+	void OnRep_Ammo();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateAmmoToHud();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -53,8 +69,14 @@ public:
 	UAnimMontage* AnimMontage_Shoot;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
+	UAnimMontage* AnimMontage_Reload;
+
+	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	UParticleSystem* FireEffect;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	USoundBase* SoundBase;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Ammo)
+	int Ammo;
 };

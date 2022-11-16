@@ -52,6 +52,12 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void ResPressC();
 
+	UFUNCTION(Server, Reliable)
+	void ReqPressReload();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ResPressReload();
+
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -88,6 +94,8 @@ protected:
 	void TestSetOwnerWeapon();
 
 	void BindPlayerState();
+
+	void PressReload();
 
 protected:
 	// APawn interface

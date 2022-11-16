@@ -10,6 +10,10 @@ void AShootingGameHUD::OnUpdateMyHp_Implementation(float CurrentHp, float MaxHp)
 {
 }
 
+void AShootingGameHUD::OnUpdateMyAmmo_Implementation(int Ammo)
+{
+}
+
 void AShootingGameHUD::BeginPlay()
 {
 	Super::BeginPlay();

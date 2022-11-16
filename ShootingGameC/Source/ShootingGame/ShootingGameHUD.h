@@ -27,6 +27,11 @@ public:
 
 	void OnUpdateMyHp_Implementation(float CurrentHp, float MaxHp);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnUpdateMyAmmo(int Ammo);
+
+	void OnUpdateMyAmmo_Implementation(int Ammo);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

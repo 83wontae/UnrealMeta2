@@ -132,6 +132,9 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// TestKey
 	PlayerInputComponent->BindAction("TestKey", IE_Pressed, this, &AShootingGameCharacter::PressTestKey);
+
+	// Reload
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AShootingGameCharacter::PressReload);
 }
 
 AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
@@ -185,6 +188,16 @@ void AShootingGameCharacter::DoGetup()
 
 void AShootingGameCharacter::ReqPressTrigger_Implementation()
 {
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj)
+	{
+		bool IsCanUse = false;
+		InterfaceObj->Execute_IsCanUse(EquipWeapon, IsCanUse);
+		if (IsCanUse == false)
+			return;
+	}
+
 	ResPressTrigger();
 }
 
@@ -212,6 +225,20 @@ void AShootingGameCharacter::ResPressC_Implementation()
 	else
 	{
 		DoRagdoll();
+	}
+}
+
+void AShootingGameCharacter::ReqPressReload_Implementation()
+{
+	ResPressReload();
+}
+void AShootingGameCharacter::ResPressReload_Implementation()
+{
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_PressReload(EquipWeapon);
 	}
 }
 
@@ -260,6 +287,7 @@ void AShootingGameCharacter::TestSetOwnerWeapon()
 		if (weapon)
 		{
 			weapon->OwnChar = this;
+			weapon->UpdateAmmoToHud();
 		}
 		return;
 	}
@@ -280,6 +308,11 @@ void AShootingGameCharacter::BindPlayerState()
 
 	FTimerManager& timerManager = GetWorld()->GetTimerManager();
 	timerManager.SetTimer(th_BindPlayerState, this, &AShootingGameCharacter::BindPlayerState, 0.1f, false);
+}
+
+void AShootingGameCharacter::PressReload()
+{
+	ReqPressReload();
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
