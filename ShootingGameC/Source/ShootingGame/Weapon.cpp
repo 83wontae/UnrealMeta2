@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -16,6 +17,9 @@ AWeapon::AWeapon()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 
 	RootComponent = Mesh;
+
+	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	Audio->SetupAttachment(RootComponent);
 
 	bReplicates = true;
 	SetReplicateMovement(true);
@@ -29,6 +33,7 @@ void AWeapon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetim
 	DOREPLIFETIME(AWeapon, OwnChar);
 	DOREPLIFETIME(AWeapon, AnimMontage_Shoot);
 	DOREPLIFETIME(AWeapon, FireEffect);
+	DOREPLIFETIME(AWeapon, SoundBase);
 }
 
 // Called when the game starts or when spawned
@@ -36,6 +41,7 @@ void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Audio->SetSound(SoundBase);
 }
 
 // Called every frame
@@ -53,6 +59,8 @@ void AWeapon::PressTrigger_Implementation()
 void AWeapon::NotifyShoot_Implementation()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireEffect, Mesh->GetSocketLocation("Muzzle"), Mesh->GetSocketRotation("Muzzle"), FVector(0.3f, 0.3f, 0.3f));
+
+	Audio->Play();
 
 	APlayerController* shooter = GetWorld()->GetFirstPlayerController();
 	if (shooter == OwnChar->GetController())
