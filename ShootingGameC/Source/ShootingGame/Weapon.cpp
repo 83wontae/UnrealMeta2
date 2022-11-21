@@ -8,6 +8,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/AudioComponent.h"
 #include "ShootingGameHUD.h"
+#include "ShootingGameInstance.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -33,10 +34,8 @@ void AWeapon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetim
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWeapon, OwnChar);
-	DOREPLIFETIME(AWeapon, AnimMontage_Shoot);
-	DOREPLIFETIME(AWeapon, AnimMontage_Reload);
 	DOREPLIFETIME(AWeapon, FireEffect);
-	DOREPLIFETIME(AWeapon, SoundBase);
+	DOREPLIFETIME(AWeapon, RowName);
 	DOREPLIFETIME(AWeapon, Ammo);
 }
 
@@ -45,7 +44,12 @@ void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Audio->SetSound(SoundBase);
+	WeaponData = Cast<UShootingGameInstance>(GetGameInstance())->GetWeaponRowData(RowName);
+	if (WeaponData)
+	{
+		Mesh->SetStaticMesh(WeaponData->StaticMesh);
+		Audio->SetSound(WeaponData->SoundBase);
+	}
 }
 
 // Called every frame
@@ -57,7 +61,7 @@ void AWeapon::Tick(float DeltaTime)
 
 void AWeapon::PressTrigger_Implementation()
 {
-	OwnChar->PlayAnimMontage(AnimMontage_Shoot);
+	OwnChar->PlayAnimMontage(WeaponData->ShootMontage);
 }
 
 void AWeapon::NotifyShoot_Implementation()
@@ -80,7 +84,7 @@ void AWeapon::NotifyShoot_Implementation()
 
 void AWeapon::PressReload_Implementation()
 {
-	OwnChar->PlayAnimMontage(AnimMontage_Reload);
+	OwnChar->PlayAnimMontage(WeaponData->ReloadMontage);
 }
 
 void AWeapon::IsCanUse_Implementation(bool& IsCanUse)
