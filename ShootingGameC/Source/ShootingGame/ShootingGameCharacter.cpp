@@ -75,6 +75,11 @@ void AShootingGameCharacter::Tick(float DeltaTime)
 	{
 		ControlPitch = GetControlRotation().Pitch;
 	}
+
+	if (IsRagdoll)
+	{
+		SetActorLocation(GetMesh()->GetSocketLocation("spine_01") + FVector(0.0f, 0.0f, 60.0f));
+	}
 }
 
 float AShootingGameCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
