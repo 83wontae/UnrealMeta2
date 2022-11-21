@@ -96,7 +96,7 @@ public:
 	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	UParticleSystem* FireEffect;
 
-	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	FName RowName;
 
 	FST_Weapon* WeaponData;

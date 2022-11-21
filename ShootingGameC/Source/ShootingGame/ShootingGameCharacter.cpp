@@ -135,6 +135,9 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Reload
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AShootingGameCharacter::PressReload);
+
+	// PickUp
+	PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AShootingGameCharacter::PressPickUp);
 }
 
 AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
@@ -313,6 +316,12 @@ void AShootingGameCharacter::BindPlayerState()
 void AShootingGameCharacter::PressReload()
 {
 	ReqPressReload();
+}
+
+void AShootingGameCharacter::PressPickUp()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+		FString::Printf(TEXT("PressPickUp")));
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)

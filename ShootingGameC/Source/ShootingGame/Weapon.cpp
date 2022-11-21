@@ -49,6 +49,8 @@ void AWeapon::BeginPlay()
 	{
 		Mesh->SetStaticMesh(WeaponData->StaticMesh);
 		Audio->SetSound(WeaponData->SoundBase);
+		Mesh->SetCollisionProfileName("Weapon");
+		Mesh->SetSimulatePhysics(true);
 	}
 }
 

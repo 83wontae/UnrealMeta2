@@ -97,6 +97,8 @@ protected:
 
 	void PressReload();
 
+	void PressPickUp();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
