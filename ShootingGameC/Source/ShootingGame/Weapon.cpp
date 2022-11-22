@@ -101,11 +101,27 @@ void AWeapon::IsCanUse_Implementation(bool& IsCanUse)
 	OnRep_Ammo();
 }
 
-void AWeapon::EquipWeapon_Implementation(ACharacter* targetChar)
+void AWeapon::AttachWeapon_Implementation(ACharacter* targetChar)
 {
+	OwnChar = targetChar;
+
 	Mesh->SetSimulatePhysics(false);
+
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	AttachToComponent(targetChar->GetMesh()
 		, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("weapon"));
+}
+
+void AWeapon::DetachWeapon_Implementation(ACharacter* targetChar)
+{
+	OwnChar = nullptr;
+
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	Mesh->SetSimulatePhysics(true);
+
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 }
 
 void AWeapon::OnRep_Ammo()

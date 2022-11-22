@@ -78,9 +78,14 @@ public:
 	virtual void IsCanUse_Implementation(bool& IsCanUse) override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void EquipWeapon(ACharacter* targetChar);
+	void AttachWeapon(ACharacter* targetChar);
 
-	virtual void EquipWeapon_Implementation(ACharacter* targetChar) override;
+	virtual void AttachWeapon_Implementation(ACharacter* targetChar) override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void DetachWeapon(ACharacter* targetChar);
+
+	virtual void DetachWeapon_Implementation(ACharacter* targetChar) override;
 
 public:
 	UFUNCTION(Server, Reliable)

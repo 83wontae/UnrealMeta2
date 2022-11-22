@@ -101,7 +101,6 @@ void AShootingGameCharacter::GetLifetimeReplicatedProps(TArray< FLifetimePropert
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AShootingGameCharacter, ControlPitch);
-	DOREPLIFETIME(AShootingGameCharacter, EquipWeapon);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -135,22 +134,26 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	// Shoot
 	PlayerInputComponent->BindAction("Trigger", IE_Pressed, this, &AShootingGameCharacter::PressTrigger);
 
-	// TestKey
-	PlayerInputComponent->BindAction("TestKey", IE_Pressed, this, &AShootingGameCharacter::PressTestKey);
-
 	// Reload
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AShootingGameCharacter::PressReload);
 
 	// PickUp
 	PlayerInputComponent->BindAction("PickUp", IE_Pressed, this, &AShootingGameCharacter::PressPickUp);
+
+	// DropWeapon
+	PlayerInputComponent->BindAction("DropWeapon", IE_Pressed, this, &AShootingGameCharacter::PressDropWeapon);
 }
 
 AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
 {
-	EquipWeapon = Weapon;
-	OnRep_EquipWeapon();
+	if (IsValid(EquipWeapon))
+	{
+		DetachWeapon();
+	}
 
-	ApplyOwnerWeapon();
+	ResPickUp(Weapon);
+
+	AttachWeapon(Weapon);
 
 	return EquipWeapon;
 }
@@ -258,18 +261,30 @@ void AShootingGameCharacter::ReqPickUp_Implementation()
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
 		FString::Printf(TEXT("PressPickUp")));
 
-	//TArray<AActor*> actors;
-	//GetCapsuleComponent()->GetOverlappingActors(actors, AWeapon::StaticClass());
-
-	//if (actors.Num() > 0)
-	//{
-	//	SetEquipWeapon(actors[0]);
-	//}
-
 	AActor* nearestActor = GetNearestWeapon();
 	if (nearestActor)
 	{
 		SetEquipWeapon(nearestActor);
+	}
+}
+
+void AShootingGameCharacter::ResPickUp_Implementation(AActor* weapon)
+{
+	if (IsValid(EquipWeapon))
+	{
+		IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+		if (InterfaceObj)
+		{
+			InterfaceObj->Execute_DetachWeapon(EquipWeapon, this);
+		}
+	}
+
+	EquipWeapon = weapon;
+
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(weapon);
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_AttachWeapon(weapon, this);
 	}
 }
 
@@ -306,27 +321,6 @@ void AShootingGameCharacter::PressTestKey()
 	ReqPressC();
 }
 
-void AShootingGameCharacter::ApplyOwnerWeapon()
-{
-	if (IsValid(GetController()))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, 
-			FString::Printf(TEXT("SetOwnerComplate!!! Owner : %s"), *GetController()->GetName()));
-
-		EquipWeapon->SetOwner(GetController());
-		AWeapon* weapon = Cast<AWeapon>(EquipWeapon);
-		if (weapon)
-		{
-			weapon->OwnChar = this;
-			weapon->UpdateAmmoToHud();
-		}
-		return;
-	}
-
-	FTimerManager& timerManager = GetWorld()->GetTimerManager();
-	timerManager.SetTimer(th_SetOwnerWeapon, this, &AShootingGameCharacter::ApplyOwnerWeapon, 0.1f, false);
-}
-
 void AShootingGameCharacter::BindPlayerState()
 {
 	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
@@ -351,13 +345,26 @@ void AShootingGameCharacter::PressPickUp()
 	ReqPickUp();
 }
 
+void AShootingGameCharacter::PressDropWeapon()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+		FString::Printf(TEXT("PressDropWeapon")));
+
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_DetachWeapon(EquipWeapon, this);
+	}
+}
+
 void AShootingGameCharacter::OnRep_EquipWeapon()
 {
 	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
 
 	if (InterfaceObj)
 	{
-		InterfaceObj->Execute_EquipWeapon(EquipWeapon, this);
+		InterfaceObj->Execute_AttachWeapon(EquipWeapon, this);
 	}
 }
 
@@ -385,6 +392,16 @@ AActor* AShootingGameCharacter::GetNearestWeapon()
 	}
 
 	return nearestActor;
+}
+
+void AShootingGameCharacter::AttachWeapon(AActor* actor)
+{
+	actor->SetOwner(GetController());
+}
+
+void AShootingGameCharacter::DetachWeapon()
+{
+	EquipWeapon->SetOwner(nullptr);
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
