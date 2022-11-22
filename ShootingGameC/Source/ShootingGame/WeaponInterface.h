@@ -41,4 +41,9 @@ public:
 	void IsCanUse(bool& IsCanUse);
 
 	virtual void IsCanUse_Implementation(bool& IsCanUse) {};
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void EquipWeapon(ACharacter* targetChar);
+
+	virtual void EquipWeapon_Implementation(ACharacter* targetChar) {};
 };

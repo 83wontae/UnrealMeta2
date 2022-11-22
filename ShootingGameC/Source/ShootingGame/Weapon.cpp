@@ -34,7 +34,6 @@ void AWeapon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetim
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWeapon, OwnChar);
-	DOREPLIFETIME(AWeapon, FireEffect);
 	DOREPLIFETIME(AWeapon, RowName);
 	DOREPLIFETIME(AWeapon, Ammo);
 }
@@ -68,7 +67,7 @@ void AWeapon::PressTrigger_Implementation()
 
 void AWeapon::NotifyShoot_Implementation()
 {
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireEffect, Mesh->GetSocketLocation("Muzzle"), Mesh->GetSocketRotation("Muzzle"), FVector(0.3f, 0.3f, 0.3f));
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponData->FireEffect, Mesh->GetSocketLocation("Muzzle"), Mesh->GetSocketRotation("Muzzle"), FVector(0.3f, 0.3f, 0.3f));
 
 	Audio->Play();
 
@@ -100,6 +99,13 @@ void AWeapon::IsCanUse_Implementation(bool& IsCanUse)
 	Ammo = Ammo - 1;
 	IsCanUse = true;
 	OnRep_Ammo();
+}
+
+void AWeapon::EquipWeapon_Implementation(ACharacter* targetChar)
+{
+	Mesh->SetSimulatePhysics(false);
+	AttachToComponent(targetChar->GetMesh()
+		, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("weapon"));
 }
 
 void AWeapon::OnRep_Ammo()

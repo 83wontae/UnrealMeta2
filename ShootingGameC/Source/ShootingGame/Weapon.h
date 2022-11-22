@@ -19,6 +19,7 @@ public:
 		, ShootMontage(nullptr)
 		, ReloadMontage(nullptr)
 		, SoundBase(nullptr)
+		, FireEffect(nullptr)
 	{}
 
 
@@ -33,6 +34,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundBase* SoundBase;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystem* FireEffect;
 };
 
 UCLASS()
@@ -73,6 +77,11 @@ public:
 
 	virtual void IsCanUse_Implementation(bool& IsCanUse) override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void EquipWeapon(ACharacter* targetChar);
+
+	virtual void EquipWeapon_Implementation(ACharacter* targetChar) override;
+
 public:
 	UFUNCTION(Server, Reliable)
 	void ReqShoot(const FVector vStart, const FVector vEnd);
@@ -92,10 +101,7 @@ public:
 
 	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	ACharacter* OwnChar;
-
-	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
-	UParticleSystem* FireEffect;
-
+	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
 	FName RowName;
 

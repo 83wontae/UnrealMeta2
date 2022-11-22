@@ -58,6 +58,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void ResPressReload();
 
+	UFUNCTION(Server, Reliable)
+	void ReqPickUp();
+
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -91,13 +94,18 @@ protected:
 
 	void PressTestKey();
 
-	void TestSetOwnerWeapon();
+	void ApplyOwnerWeapon();
 	
 	void BindPlayerState();
 
 	void PressReload();
 
 	void PressPickUp();
+
+	UFUNCTION()
+	void OnRep_EquipWeapon();
+
+	AActor* GetNearestWeapon();
 
 protected:
 	// APawn interface
@@ -131,7 +139,7 @@ public:
 	void DoGetup();
 
 private:
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_EquipWeapon)
 	AActor* EquipWeapon;
 
 	UPROPERTY(Replicated)

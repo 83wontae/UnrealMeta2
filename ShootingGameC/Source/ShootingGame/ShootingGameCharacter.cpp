@@ -148,7 +148,9 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
 {
 	EquipWeapon = Weapon;
-	TestSetOwnerWeapon();
+	OnRep_EquipWeapon();
+
+	ApplyOwnerWeapon();
 
 	return EquipWeapon;
 }
@@ -240,6 +242,7 @@ void AShootingGameCharacter::ReqPressReload_Implementation()
 {
 	ResPressReload();
 }
+
 void AShootingGameCharacter::ResPressReload_Implementation()
 {
 	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
@@ -247,6 +250,26 @@ void AShootingGameCharacter::ResPressReload_Implementation()
 	if (InterfaceObj)
 	{
 		InterfaceObj->Execute_PressReload(EquipWeapon);
+	}
+}
+
+void AShootingGameCharacter::ReqPickUp_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
+		FString::Printf(TEXT("PressPickUp")));
+
+	//TArray<AActor*> actors;
+	//GetCapsuleComponent()->GetOverlappingActors(actors, AWeapon::StaticClass());
+
+	//if (actors.Num() > 0)
+	//{
+	//	SetEquipWeapon(actors[0]);
+	//}
+
+	AActor* nearestActor = GetNearestWeapon();
+	if (nearestActor)
+	{
+		SetEquipWeapon(nearestActor);
 	}
 }
 
@@ -283,7 +306,7 @@ void AShootingGameCharacter::PressTestKey()
 	ReqPressC();
 }
 
-void AShootingGameCharacter::TestSetOwnerWeapon()
+void AShootingGameCharacter::ApplyOwnerWeapon()
 {
 	if (IsValid(GetController()))
 	{
@@ -301,7 +324,7 @@ void AShootingGameCharacter::TestSetOwnerWeapon()
 	}
 
 	FTimerManager& timerManager = GetWorld()->GetTimerManager();
-	timerManager.SetTimer(th_SetOwnerWeapon, this, &AShootingGameCharacter::TestSetOwnerWeapon, 0.1f, false);
+	timerManager.SetTimer(th_SetOwnerWeapon, this, &AShootingGameCharacter::ApplyOwnerWeapon, 0.1f, false);
 }
 
 void AShootingGameCharacter::BindPlayerState()
@@ -325,8 +348,34 @@ void AShootingGameCharacter::PressReload()
 
 void AShootingGameCharacter::PressPickUp()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
-		FString::Printf(TEXT("PressPickUp")));
+	ReqPickUp();
+}
+
+void AShootingGameCharacter::OnRep_EquipWeapon()
+{
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_EquipWeapon(EquipWeapon, this);
+	}
+}
+
+AActor* AShootingGameCharacter::GetNearestWeapon()
+{
+	TArray<AActor*> actors;
+	GetCapsuleComponent()->GetOverlappingActors(actors, AWeapon::StaticClass());
+
+	for (AActor* weapon : actors)
+	{
+		IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+		if (InterfaceObj == nullptr)
+			continue;
+
+		float dist = FVector::Distance(GetActorLocation(), weapon->GetActorLocation());
+	}
+	return nullptr;
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
