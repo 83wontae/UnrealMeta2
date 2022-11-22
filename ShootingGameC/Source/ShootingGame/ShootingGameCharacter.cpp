@@ -350,12 +350,24 @@ void AShootingGameCharacter::PressDropWeapon()
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
 		FString::Printf(TEXT("PressDropWeapon")));
 
+	ReqDropWeapon();
+}
+void AShootingGameCharacter::ReqDropWeapon_Implementation()
+{
+	DetachWeapon();
+	ResDropWeapon();
+}
+
+void AShootingGameCharacter::ResDropWeapon_Implementation()
+{
 	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
 
 	if (InterfaceObj)
 	{
 		InterfaceObj->Execute_DetachWeapon(EquipWeapon, this);
 	}
+
+	EquipWeapon = nullptr;
 }
 
 void AShootingGameCharacter::OnRep_EquipWeapon()

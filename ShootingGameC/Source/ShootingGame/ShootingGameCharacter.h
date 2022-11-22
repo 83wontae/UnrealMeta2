@@ -64,6 +64,12 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void ResPickUp(AActor* weapon);
 
+	UFUNCTION(Server, Reliable)
+	void ReqDropWeapon();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void ResDropWeapon();
+
 protected:
 
 	/** Resets HMD orientation in VR. */
