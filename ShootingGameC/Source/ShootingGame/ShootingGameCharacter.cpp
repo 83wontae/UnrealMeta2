@@ -363,19 +363,28 @@ void AShootingGameCharacter::OnRep_EquipWeapon()
 
 AActor* AShootingGameCharacter::GetNearestWeapon()
 {
+	float nearestDist = 9999999.0f;
+	AActor* nearestActor = nullptr;
 	TArray<AActor*> actors;
 	GetCapsuleComponent()->GetOverlappingActors(actors, AWeapon::StaticClass());
 
 	for (AActor* weapon : actors)
 	{
-		IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+		IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(weapon);
 
 		if (InterfaceObj == nullptr)
 			continue;
 
 		float dist = FVector::Distance(GetActorLocation(), weapon->GetActorLocation());
+
+		if (dist > nearestDist)
+			continue;
+
+		nearestDist = dist;
+		nearestActor = weapon;
 	}
-	return nullptr;
+
+	return nearestActor;
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
