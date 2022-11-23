@@ -133,6 +133,7 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// Shoot
 	PlayerInputComponent->BindAction("Trigger", IE_Pressed, this, &AShootingGameCharacter::PressTrigger);
+	PlayerInputComponent->BindAction("Trigger", IE_Released, this, &AShootingGameCharacter::ReleaseTrigger);
 
 	// Reload
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AShootingGameCharacter::PressReload);
@@ -168,6 +169,16 @@ void AShootingGameCharacter::OnNotifyShoot()
 	}
 }
 
+void AShootingGameCharacter::OnNotifyReload()
+{
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_NotifyReload(EquipWeapon);
+	}
+}
+
 void AShootingGameCharacter::OnUpdateHp_Implementation(float CurrentHp, float MaxHp)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
@@ -199,28 +210,18 @@ void AShootingGameCharacter::DoGetup()
 	GetMesh()->SetRelativeLocationAndRotation(loc, Rot);
 }
 
-void AShootingGameCharacter::ReqPressTrigger_Implementation()
+void AShootingGameCharacter::ReqPressTrigger_Implementation(bool isPressed)
 {
-	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
-
-	if (InterfaceObj)
-	{
-		bool IsCanUse = false;
-		InterfaceObj->Execute_IsCanUse(EquipWeapon, IsCanUse);
-		if (IsCanUse == false)
-			return;
-	}
-
-	ResPressTrigger();
+	ResPressTrigger(isPressed);
 }
 
-void AShootingGameCharacter::ResPressTrigger_Implementation()
+void AShootingGameCharacter::ResPressTrigger_Implementation(bool isPressed)
 {
 	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
 
 	if (InterfaceObj)
 	{
-		InterfaceObj->Execute_PressTrigger(EquipWeapon);
+		InterfaceObj->Execute_PressTrigger(EquipWeapon, isPressed);
 	}
 }
 
@@ -305,7 +306,12 @@ void AShootingGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector
 
 void AShootingGameCharacter::PressTrigger()
 {
-	ReqPressTrigger();
+	ReqPressTrigger(true);
+}
+
+void AShootingGameCharacter::ReleaseTrigger()
+{
+	ReqPressTrigger(false);
 }
 
 void AShootingGameCharacter::PressTestKey()

@@ -23,14 +23,19 @@ class SHOOTINGGAME_API IWeaponInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void PressTrigger();
+	void PressTrigger(bool isPressed);
 
-	virtual void PressTrigger_Implementation() {};
+	virtual void PressTrigger_Implementation(bool isPressed) {};
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void NotifyShoot();
 
 	virtual void NotifyShoot_Implementation() {};
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void NotifyReload();
+
+	virtual void NotifyReload_Implementation() {};
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void PressReload();

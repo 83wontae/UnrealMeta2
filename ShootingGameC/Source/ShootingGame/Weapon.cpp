@@ -60,13 +60,20 @@ void AWeapon::Tick(float DeltaTime)
 
 }
 
-void AWeapon::PressTrigger_Implementation()
+void AWeapon::PressTrigger_Implementation(bool isPressed)
 {
-	OwnChar->PlayAnimMontage(WeaponData->ShootMontage);
+	if(isPressed)
+		OwnChar->PlayAnimMontage(WeaponData->ShootMontage);
 }
 
 void AWeapon::NotifyShoot_Implementation()
 {
+	bool isUse = false;
+	IsCanUse(isUse);
+
+	if (isUse == false)
+		return;
+
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponData->FireEffect, Mesh->GetSocketLocation("Muzzle"), Mesh->GetSocketRotation("Muzzle"), FVector(0.3f, 0.3f, 0.3f));
 
 	Audio->Play();
@@ -83,6 +90,11 @@ void AWeapon::NotifyShoot_Implementation()
 	}
 }
 
+void AWeapon::NotifyReload_Implementation()
+{
+	DoReload();
+}
+
 void AWeapon::PressReload_Implementation()
 {
 	OwnChar->PlayAnimMontage(WeaponData->ReloadMontage);
@@ -96,9 +108,7 @@ void AWeapon::IsCanUse_Implementation(bool& IsCanUse)
 		return;
 	}
 
-	Ammo = Ammo - 1;
 	IsCanUse = true;
-	OnRep_Ammo();
 }
 
 void AWeapon::AttachWeapon_Implementation(ACharacter* targetChar)
@@ -148,8 +158,29 @@ void AWeapon::UpdateAmmoToHud(int NewAmmo)
 	}
 }
 
+void AWeapon::DoReload()
+{
+	Ammo = WeaponData->MaxAmmo;
+	OnRep_Ammo();
+}
+
+bool AWeapon::UseAmmo()
+{
+	if (Ammo <= 0)
+	{
+		return false;
+	}
+
+	Ammo = Ammo - 1;
+	OnRep_Ammo();
+	return true;
+}
+
 void AWeapon::ReqShoot_Implementation(const FVector vStart, const FVector vEnd)
 {
+	if (UseAmmo() == false)
+		return;
+
 	FHitResult result;
 	bool isHit = GetWorld()->LineTraceSingleByObjectType(result, vStart, vEnd, ECollisionChannel::ECC_Pawn);
 

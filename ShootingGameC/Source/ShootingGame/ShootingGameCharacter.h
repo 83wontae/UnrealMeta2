@@ -41,10 +41,10 @@ public:
 	UAnimMontage* AnimMontage;
 
 	UFUNCTION(Server, Reliable)
-	void ReqPressTrigger();
+	void ReqPressTrigger(bool isPressed);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void ResPressTrigger();
+	void ResPressTrigger(bool isPressed);
 
 	UFUNCTION(Server, Reliable)
 	void ReqPressC();
@@ -101,6 +101,8 @@ protected:
 
 	void PressTrigger();
 
+	void ReleaseTrigger();
+
 	void PressTestKey();
 		
 	void BindPlayerState();
@@ -146,6 +148,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnNotifyShoot();
+
+	UFUNCTION(BlueprintCallable)
+	
+	void OnNotifyReload();
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnUpdateHp(float CurrentHp, float MaxHp);

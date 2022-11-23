@@ -20,6 +20,8 @@ public:
 		, ReloadMontage(nullptr)
 		, SoundBase(nullptr)
 		, FireEffect(nullptr)
+		, MaxAmmo(30)
+		, Damage(10)
 	{}
 
 
@@ -37,6 +39,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UParticleSystem* FireEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MaxAmmo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage;
 };
 
 UCLASS()
@@ -58,14 +66,19 @@ public:
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void PressTrigger();
+	void PressTrigger(bool isPressed);
 
-	virtual void PressTrigger_Implementation() override;
+	virtual void PressTrigger_Implementation(bool isPressed) override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void NotifyShoot();
 
 	virtual void NotifyShoot_Implementation() override;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void NotifyReload();
+
+	virtual void NotifyReload_Implementation() override;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void PressReload();
@@ -96,6 +109,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateAmmoToHud(int NewAmmo);
+
+	UFUNCTION(BlueprintCallable)
+	void DoReload();
+
+	UFUNCTION(BlueprintCallable)
+	bool UseAmmo();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
