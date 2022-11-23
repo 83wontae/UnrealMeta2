@@ -116,9 +116,13 @@ protected:
 
 	AActor* GetNearestWeapon();
 
-	void AttachWeapon(AActor* actor);
+	void EnableOwnerWeapon(AActor* actor);
 
-	void DetachWeapon();
+	void DisableOwnerWeapon();
+
+	void AttachWeapon(AActor* weapon);
+
+	void DetachWeapon(AActor* weapon);
 
 protected:
 	// APawn interface
@@ -136,6 +140,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AActor* SetEquipWeapon(AActor* Weapon);
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE AActor* GetEquipWeapon() const { return EquipWeapon; }
 
 	UFUNCTION(BlueprintCallable)
 	void OnNotifyShoot();

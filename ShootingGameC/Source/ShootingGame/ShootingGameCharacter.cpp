@@ -148,12 +148,12 @@ AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
 {
 	if (IsValid(EquipWeapon))
 	{
-		DetachWeapon();
+		DisableOwnerWeapon();
 	}
 
 	ResPickUp(Weapon);
 
-	AttachWeapon(Weapon);
+	EnableOwnerWeapon(Weapon);
 
 	return EquipWeapon;
 }
@@ -279,13 +279,7 @@ void AShootingGameCharacter::ResPickUp_Implementation(AActor* weapon)
 		}
 	}
 
-	EquipWeapon = weapon;
-
-	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(weapon);
-	if (InterfaceObj)
-	{
-		InterfaceObj->Execute_AttachWeapon(weapon, this);
-	}
+	AttachWeapon(weapon);
 }
 
 void AShootingGameCharacter::OnResetVR()
@@ -354,20 +348,13 @@ void AShootingGameCharacter::PressDropWeapon()
 }
 void AShootingGameCharacter::ReqDropWeapon_Implementation()
 {
-	DetachWeapon();
+	DisableOwnerWeapon();
 	ResDropWeapon();
 }
 
 void AShootingGameCharacter::ResDropWeapon_Implementation()
 {
-	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
-
-	if (InterfaceObj)
-	{
-		InterfaceObj->Execute_DetachWeapon(EquipWeapon, this);
-	}
-
-	EquipWeapon = nullptr;
+	DetachWeapon(EquipWeapon);
 }
 
 void AShootingGameCharacter::OnRep_EquipWeapon()
@@ -406,14 +393,37 @@ AActor* AShootingGameCharacter::GetNearestWeapon()
 	return nearestActor;
 }
 
-void AShootingGameCharacter::AttachWeapon(AActor* actor)
+void AShootingGameCharacter::EnableOwnerWeapon(AActor* actor)
 {
 	actor->SetOwner(GetController());
 }
 
-void AShootingGameCharacter::DetachWeapon()
+void AShootingGameCharacter::DisableOwnerWeapon()
 {
 	EquipWeapon->SetOwner(nullptr);
+}
+
+void AShootingGameCharacter::AttachWeapon(AActor* weapon)
+{
+	EquipWeapon = weapon;
+
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(weapon);
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_AttachWeapon(weapon, this);
+	}
+}
+
+void AShootingGameCharacter::DetachWeapon(AActor* weapon)
+{
+	IWeaponInterface* InterfaceObj = Cast<IWeaponInterface>(EquipWeapon);
+
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_DetachWeapon(EquipWeapon, this);
+	}
+
+	EquipWeapon = nullptr;
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
