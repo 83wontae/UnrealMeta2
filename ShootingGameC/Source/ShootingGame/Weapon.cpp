@@ -111,10 +111,14 @@ void AWeapon::AttachWeapon_Implementation(ACharacter* targetChar)
 
 	AttachToComponent(targetChar->GetMesh()
 		, FAttachmentTransformRules::SnapToTargetNotIncludingScale, FName("weapon"));
+
+	UpdateAmmoToHud(Ammo);
 }
 
 void AWeapon::DetachWeapon_Implementation(ACharacter* targetChar)
 {
+	UpdateAmmoToHud(0);
+
 	OwnChar = nullptr;
 
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -126,10 +130,10 @@ void AWeapon::DetachWeapon_Implementation(ACharacter* targetChar)
 
 void AWeapon::OnRep_Ammo()
 {
-	UpdateAmmoToHud();
+	UpdateAmmoToHud(Ammo);
 }
 
-void AWeapon::UpdateAmmoToHud()
+void AWeapon::UpdateAmmoToHud(int NewAmmo)
 {
 	//UI 출력 연결
 	APlayerController* firstPlayer = GetWorld()->GetFirstPlayerController();
@@ -139,7 +143,7 @@ void AWeapon::UpdateAmmoToHud()
 		AShootingGameHUD* Hud = Cast<AShootingGameHUD>(firstPlayer->GetHUD());
 		if (IsValid(Hud))
 		{
-			Hud->OnUpdateMyAmmo(Ammo);
+			Hud->OnUpdateMyAmmo(NewAmmo);
 		}
 	}
 }

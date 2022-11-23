@@ -95,7 +95,7 @@ public:
 	void OnRep_Ammo();
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateAmmoToHud();
+	void UpdateAmmoToHud(int NewAmmo);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

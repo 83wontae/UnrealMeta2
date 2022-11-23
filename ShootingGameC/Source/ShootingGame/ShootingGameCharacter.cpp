@@ -400,7 +400,8 @@ void AShootingGameCharacter::EnableOwnerWeapon(AActor* actor)
 
 void AShootingGameCharacter::DisableOwnerWeapon()
 {
-	EquipWeapon->SetOwner(nullptr);
+	if(IsValid(EquipWeapon))
+		EquipWeapon->SetOwner(nullptr);
 }
 
 void AShootingGameCharacter::AttachWeapon(AActor* weapon)
@@ -412,6 +413,9 @@ void AShootingGameCharacter::AttachWeapon(AActor* weapon)
 	{
 		InterfaceObj->Execute_AttachWeapon(weapon, this);
 	}
+
+	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 void AShootingGameCharacter::DetachWeapon(AActor* weapon)
@@ -424,6 +428,9 @@ void AShootingGameCharacter::DetachWeapon(AActor* weapon)
 	}
 
 	EquipWeapon = nullptr;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void AShootingGameCharacter::TurnAtRate(float Rate)
