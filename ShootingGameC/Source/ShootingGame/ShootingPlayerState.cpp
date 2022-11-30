@@ -35,6 +35,15 @@ void AShootingPlayerState::OnRep_MaxHp()
 void AShootingPlayerState::AddDamage(float Damage)
 {
 	CurHp = CurHp - Damage;
+	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
+
+	OnRep_CurHp();
+}
+
+void AShootingPlayerState::AddHeal(float Heal)
+{
+	CurHp = CurHp + Heal;
+	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
 
 	OnRep_CurHp();
 }

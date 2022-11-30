@@ -2,6 +2,7 @@
 
 
 #include "ItemObject.h"
+#include "ItemInterface.h"
 
 // Sets default values
 AItemObject::AItemObject()
@@ -35,5 +36,12 @@ void AItemObject::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,
 		FString::Printf(TEXT("OnBeginOverlap OtherActor=%s"), *OtherActor->GetName()));
+
+	IItemInterface* InterfaceObj = Cast<IItemInterface>(OtherActor);
+
+	if (InterfaceObj)
+	{
+		InterfaceObj->Execute_AddHeal(OtherActor, 10.0f);
+	}
 }
 

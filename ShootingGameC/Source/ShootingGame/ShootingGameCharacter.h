@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemInterface.h"
 #include "GameFramework/Character.h"
 #include "ShootingGameCharacter.generated.h"
 
 UCLASS(config=Game)
-class AShootingGameCharacter : public ACharacter
+class AShootingGameCharacter : public ACharacter, public IItemInterface
 {
 	GENERATED_BODY()
 
@@ -163,6 +164,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DoGetup();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void AddHeal(float Heal);
+
+	virtual void AddHeal_Implementation(float Heal) override;
 
 private:
 	AActor* EquipWeapon;

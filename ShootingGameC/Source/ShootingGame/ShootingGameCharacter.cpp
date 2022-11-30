@@ -210,6 +210,15 @@ void AShootingGameCharacter::DoGetup()
 	GetMesh()->SetRelativeLocationAndRotation(loc, Rot);
 }
 
+void AShootingGameCharacter::AddHeal_Implementation(float Heal)
+{
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (ps)
+	{
+		ps->AddHeal(Heal);
+	}
+}
+
 void AShootingGameCharacter::ReqPressTrigger_Implementation(bool isPressed)
 {
 	ResPressTrigger(isPressed);

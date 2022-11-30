@@ -42,5 +42,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddDamage(float Damage);
 
+	UFUNCTION(BlueprintCallable)
+	void AddHeal(float Heal);
+
 	FDele_Multi_UpdateHp_TwoParams Fuc_Dele_UpdateHp_TwoParams;
 };
