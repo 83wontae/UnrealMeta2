@@ -32,6 +32,11 @@ public:
 
 	void OnUpdateMyAmmo_Implementation(int Ammo);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnUpdateMyMag(int Mag);
+
+	void OnUpdateMyMag_Implementation(int Mag);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

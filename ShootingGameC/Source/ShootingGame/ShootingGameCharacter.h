@@ -114,6 +114,8 @@ protected:
 
 	void PressDropWeapon();
 
+	void PressMagTest();
+
 	UFUNCTION()
 	void OnRep_EquipWeapon();
 

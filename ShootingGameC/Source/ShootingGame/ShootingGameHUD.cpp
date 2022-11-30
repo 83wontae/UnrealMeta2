@@ -14,6 +14,10 @@ void AShootingGameHUD::OnUpdateMyAmmo_Implementation(int Ammo)
 {
 }
 
+void AShootingGameHUD::OnUpdateMyMag_Implementation(int Mag)
+{
+}
+
 void AShootingGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
@@ -38,6 +42,9 @@ void AShootingGameHUD::BindPlayerState()
 		{
 			ps->Fuc_Dele_UpdateHp_TwoParams.AddUFunction(this, FName("OnUpdateMyHp"));
 			OnUpdateMyHp(ps->GetCurHp(), ps->GetMaxHp());
+
+			ps->Fuc_Dele_UpdateMag_OneParam.AddUFunction(this, FName("OnUpdateMyMag"));
+			OnUpdateMyMag(ps->GetMag());
 			return;
 		}
 	}

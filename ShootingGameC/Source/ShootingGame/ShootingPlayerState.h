@@ -7,6 +7,7 @@
 #include "ShootingPlayerState.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_TwoParams(FDele_Multi_UpdateHp_TwoParams, float, float);
+DECLARE_MULTICAST_DELEGATE_OneParam(FDele_Multi_UpdateMag_OneParam, int);
 /**
  * 
  */
@@ -25,12 +26,18 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_MaxHp)
 	float MaxHp;
 
+	UPROPERTY(ReplicatedUsing = OnRep_Mag)
+	int Mag;
+
 public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE float GetCurHp() const { return CurHp; }
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE float GetMaxHp() const { return MaxHp; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE float GetMag() const { return Mag; }
 
 public:
 	UFUNCTION()
@@ -39,11 +46,18 @@ public:
 	UFUNCTION()
 	void OnRep_MaxHp();
 
+	UFUNCTION()
+	void OnRep_Mag();
+
 	UFUNCTION(BlueprintCallable)
 	void AddDamage(float Damage);
 
 	UFUNCTION(BlueprintCallable)
 	void AddHeal(float Heal);
 
+	UFUNCTION(BlueprintCallable)
+	void AddMag();
+
 	FDele_Multi_UpdateHp_TwoParams Fuc_Dele_UpdateHp_TwoParams;
+	FDele_Multi_UpdateMag_OneParam Fuc_Dele_UpdateMag_OneParam;
 };

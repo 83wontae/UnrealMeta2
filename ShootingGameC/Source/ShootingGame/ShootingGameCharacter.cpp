@@ -143,6 +143,9 @@ void AShootingGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// DropWeapon
 	PlayerInputComponent->BindAction("DropWeapon", IE_Pressed, this, &AShootingGameCharacter::PressDropWeapon);
+
+	// MagTest
+	PlayerInputComponent->BindAction("MagTest", IE_Pressed, this, &AShootingGameCharacter::PressMagTest);
 }
 
 AActor* AShootingGameCharacter::SetEquipWeapon(AActor* Weapon)
@@ -361,6 +364,16 @@ void AShootingGameCharacter::PressDropWeapon()
 
 	ReqDropWeapon();
 }
+
+void AShootingGameCharacter::PressMagTest()
+{
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (ps)
+	{
+		ps->AddMag();
+	}
+}
+
 void AShootingGameCharacter::ReqDropWeapon_Implementation()
 {
 	DisableOwnerWeapon();

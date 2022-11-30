@@ -32,6 +32,14 @@ void AShootingPlayerState::OnRep_MaxHp()
 {
 }
 
+void AShootingPlayerState::OnRep_Mag()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("OnRep_Mag = %f"), Mag));
+
+	if (Fuc_Dele_UpdateMag_OneParam.IsBound())
+		Fuc_Dele_UpdateMag_OneParam.Broadcast(Mag);
+}
+
 void AShootingPlayerState::AddDamage(float Damage)
 {
 	CurHp = CurHp - Damage;
@@ -46,4 +54,11 @@ void AShootingPlayerState::AddHeal(float Heal)
 	CurHp = FMath::Clamp(CurHp, 0.0f, MaxHp);
 
 	OnRep_CurHp();
+}
+
+void AShootingPlayerState::AddMag()
+{
+	Mag = Mag + 1;
+
+	OnRep_Mag();
 }
