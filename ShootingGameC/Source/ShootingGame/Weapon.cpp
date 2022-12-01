@@ -150,6 +150,8 @@ void AWeapon::OnRep_RowName()
 {
 	UShootingGameInstance* gameInstance = Cast<UShootingGameInstance>(GetGameInstance());
 	WeaponData = gameInstance->GetWeaponRowData(RowName);
+	Mesh->SetStaticMesh(WeaponData->StaticMesh);
+	Audio->SetSound(WeaponData->SoundBase);
 }
 
 void AWeapon::UpdateAmmoToHud(int NewAmmo)
@@ -157,7 +159,7 @@ void AWeapon::UpdateAmmoToHud(int NewAmmo)
 	//UI 출력 연결
 	APlayerController* firstPlayer = GetWorld()->GetFirstPlayerController();
 
-	if (OwnChar->GetController() == firstPlayer)
+	if (OwnChar && OwnChar->GetController() == firstPlayer)
 	{
 		AShootingGameHUD* Hud = Cast<AShootingGameHUD>(firstPlayer->GetHUD());
 		if (IsValid(Hud))

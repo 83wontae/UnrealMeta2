@@ -25,5 +25,12 @@ void AWeaponBurst::PressTrigger_Implementation(bool isPressed)
 
 void AWeaponBurst::BurstShooting()
 {
+	if (OwnChar == nullptr)
+	{
+		FTimerManager& timerManager = GetWorld()->GetTimerManager();
+		timerManager.ClearTimer(th_BurstShooting);
+		return;
+	}
+
 	OwnChar->PlayAnimMontage(WeaponData->ShootMontage);
 }
