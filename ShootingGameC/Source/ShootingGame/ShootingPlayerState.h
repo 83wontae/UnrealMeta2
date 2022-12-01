@@ -39,6 +39,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE float GetMag() const { return Mag; }
 
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsCanUseMag() const { return ( Mag > 0 ) ? true : false; }
+
 public:
 	UFUNCTION()
 	void OnRep_CurHp();
@@ -57,6 +60,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddMag();
+
+	UFUNCTION(BlueprintCallable)
+	bool UseMag();
 
 	FDele_Multi_UpdateHp_TwoParams Fuc_Dele_UpdateHp_TwoParams;
 	FDele_Multi_UpdateMag_OneParam Fuc_Dele_UpdateMag_OneParam;

@@ -9,6 +9,7 @@
 #include "Components/AudioComponent.h"
 #include "ShootingGameHUD.h"
 #include "ShootingGameInstance.h"
+#include "ShootingPlayerState.h"
 
 // Sets default values
 AWeapon::AWeapon()
@@ -97,6 +98,15 @@ void AWeapon::NotifyReload_Implementation()
 
 void AWeapon::PressReload_Implementation()
 {
+	check(OwnChar);
+
+	AShootingPlayerState* playerState = Cast<AShootingPlayerState>(OwnChar->GetPlayerState());
+	if (playerState == nullptr)
+		return;
+
+	if (playerState->IsCanUseMag() == false)
+		return;
+
 	OwnChar->PlayAnimMontage(WeaponData->ReloadMontage);
 }
 
@@ -160,6 +170,15 @@ void AWeapon::UpdateAmmoToHud(int NewAmmo)
 
 void AWeapon::DoReload()
 {
+	check(OwnChar);
+
+	AShootingPlayerState* playerState = Cast<AShootingPlayerState>(OwnChar->GetPlayerState());
+	if (playerState == nullptr)
+		return;
+
+	if (playerState->UseMag() == false)
+		return;
+
 	Ammo = WeaponData->MaxAmmo;
 	OnRep_Ammo();
 }

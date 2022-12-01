@@ -63,3 +63,17 @@ void AShootingPlayerState::AddMag()
 
 	OnRep_Mag();
 }
+
+bool AShootingPlayerState::UseMag()
+{
+	bool result = IsCanUseMag();
+
+	if (result)
+	{
+		Mag = Mag - 1;
+
+		OnRep_Mag();
+	}
+
+	return result;
+}
