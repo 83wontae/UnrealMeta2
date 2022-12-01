@@ -22,6 +22,7 @@ public:
 		, FireEffect(nullptr)
 		, MaxAmmo(30)
 		, Damage(10)
+		, WeaponClass(nullptr)
 	{}
 
 
@@ -45,6 +46,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AWeapon> WeaponClass;
 };
 
 UCLASS()
@@ -107,6 +111,9 @@ public:
 	UFUNCTION()
 	void OnRep_Ammo();
 
+	UFUNCTION()
+	void OnRep_RowName();
+
 	UFUNCTION(BlueprintCallable)
 	void UpdateAmmoToHud(int NewAmmo);
 
@@ -116,6 +123,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool UseAmmo();
 
+	void SetRowName(FName name);
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
@@ -123,10 +132,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAudioComponent* Audio;
 
-	UPROPERTY(Replicated, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(Replicated, BlueprintReadWrite)
 	ACharacter* OwnChar;
 	
-	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(ReplicatedUsing = OnRep_RowName)
 	FName RowName;
 
 	FST_Weapon* WeaponData;

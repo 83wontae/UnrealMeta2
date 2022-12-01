@@ -21,4 +21,6 @@ public:
 	UDataTable* WeaponTable;
 
 	FST_Weapon* GetWeaponRowData(FName name);
+
+	FName GetWeaponRandomRowName();
 };

@@ -20,6 +20,8 @@ AWeapon::AWeapon()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 
 	RootComponent = Mesh;
+	Mesh->SetCollisionProfileName("Weapon");
+	Mesh->SetSimulatePhysics(true);
 
 	Audio = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
 	Audio->SetupAttachment(RootComponent);
@@ -43,15 +45,6 @@ void AWeapon::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetim
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	WeaponData = Cast<UShootingGameInstance>(GetGameInstance())->GetWeaponRowData(RowName);
-	if (WeaponData)
-	{
-		Mesh->SetStaticMesh(WeaponData->StaticMesh);
-		Audio->SetSound(WeaponData->SoundBase);
-		Mesh->SetCollisionProfileName("Weapon");
-		Mesh->SetSimulatePhysics(true);
-	}
 }
 
 // Called every frame
@@ -153,6 +146,12 @@ void AWeapon::OnRep_Ammo()
 	UpdateAmmoToHud(Ammo);
 }
 
+void AWeapon::OnRep_RowName()
+{
+	UShootingGameInstance* gameInstance = Cast<UShootingGameInstance>(GetGameInstance());
+	WeaponData = gameInstance->GetWeaponRowData(RowName);
+}
+
 void AWeapon::UpdateAmmoToHud(int NewAmmo)
 {
 	//UI 출력 연결
@@ -193,6 +192,13 @@ bool AWeapon::UseAmmo()
 	Ammo = Ammo - 1;
 	OnRep_Ammo();
 	return true;
+}
+
+void AWeapon::SetRowName(FName name)
+{
+	RowName = name;
+
+	OnRep_RowName();
 }
 
 void AWeapon::ReqShoot_Implementation(const FVector vStart, const FVector vEnd)
