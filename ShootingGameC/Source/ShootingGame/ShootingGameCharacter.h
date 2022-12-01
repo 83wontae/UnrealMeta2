@@ -172,6 +172,11 @@ public:
 
 	virtual void AddHeal_Implementation(float Heal) override;
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void AddMag();
+
+	virtual void AddMag_Implementation() override;
+
 private:
 	AActor* EquipWeapon;
 

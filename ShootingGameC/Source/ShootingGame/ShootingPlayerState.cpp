@@ -12,6 +12,7 @@ void AShootingPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty 
 
 	DOREPLIFETIME(AShootingPlayerState, CurHp);
 	DOREPLIFETIME(AShootingPlayerState, MaxHp);
+	DOREPLIFETIME(AShootingPlayerState, Mag);
 }
 
 AShootingPlayerState::AShootingPlayerState()

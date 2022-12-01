@@ -222,6 +222,15 @@ void AShootingGameCharacter::AddHeal_Implementation(float Heal)
 	}
 }
 
+void AShootingGameCharacter::AddMag_Implementation()
+{
+	AShootingPlayerState* ps = Cast<AShootingPlayerState>(GetPlayerState());
+	if (ps)
+	{
+		ps->AddMag();
+	}
+}
+
 void AShootingGameCharacter::ReqPressTrigger_Implementation(bool isPressed)
 {
 	ResPressTrigger(isPressed);

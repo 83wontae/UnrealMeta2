@@ -26,4 +26,9 @@ public:
 	void AddHeal(float Heal);
 
 	virtual void AddHeal_Implementation(float Heal) {};
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void AddMag();
+
+	virtual void AddMag_Implementation() {};
 };
