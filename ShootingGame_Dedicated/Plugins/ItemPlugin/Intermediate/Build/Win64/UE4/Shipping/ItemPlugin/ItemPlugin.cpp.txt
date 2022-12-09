@@ -1,0 +1,2 @@
+C:\Work\UnrealMeta2\ShootingGame\Plugins\ItemPlugin\Intermediate\Build\Win64\UE4\Shipping\ItemPlugin\Definitions.ItemPlugin.h
+C:\Work\UnrealMeta2\ShootingGame\Plugins\ItemPlugin\Source\ItemPlugin\Public\ItemPlugin.h

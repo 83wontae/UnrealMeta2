@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-ItemPlugin.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\UnrealEngineSource\UnrealEngine\Engine\Intermediate\Build\Win64\UE4Editor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"C:\Work\UnrealMeta2\ShootingGame_Dedicated\Plugins\ItemPlugin\Intermediate\Build\Win64\UE4Editor\Development\ItemPlugin\ItemPlugin.cpp.obj"
+"C:\UnrealEngineSource\UnrealEngine\Engine\Intermediate\Build\Win64\UE4Editor\Development\Default.rc2.res"
+/OUT:"C:\Work\UnrealMeta2\ShootingGame_Dedicated\Plugins\ItemPlugin\Intermediate\Build\Win64\UE4Editor\Development\ItemPlugin\UE4Editor-ItemPlugin.lib"
