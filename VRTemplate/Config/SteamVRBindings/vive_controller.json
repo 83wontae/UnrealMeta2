@@ -74,6 +74,21 @@
 					}
 				},
 				{
+					"mode": "dpad",
+					"path": "/user/hand/right/input/trackpad",
+					"parameters":
+					{
+						"sub_mode": "click"
+					},
+					"inputs":
+					{
+						"east":
+						{
+							"output": "/actions/main/in/ChangeFurniture"
+						}
+					}
+				},
+				{
 					"mode": "trackpad",
 					"path": "/user/hand/left/input/trackpad",
 					"inputs":
@@ -173,5 +188,5 @@
 			]
 		}
 	},
-	"description": ""
+	"description": "VRTemplate-18319896"
 }

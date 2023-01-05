@@ -63,6 +63,17 @@
 					}
 				},
 				{
+					"mode": "button",
+					"path": "/user/hand/right/input/a",
+					"inputs":
+					{
+						"click":
+						{
+							"output": "/actions/main/in/ChangeFurniture"
+						}
+					}
+				},
+				{
 					"mode": "joystick",
 					"path": "/user/hand/left/input/joystick",
 					"inputs":
@@ -173,5 +184,5 @@
 			]
 		}
 	},
-	"description": ""
+	"description": "VRTemplate-18319896"
 }
