@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ShootingGame.h"
 #include "Weapon.h"
 #include "WeaponBurst.generated.h"
 

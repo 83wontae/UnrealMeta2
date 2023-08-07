@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ShootingGame.h"
 #include "ItemInterface.h"
 #include "GameFramework/Character.h"
 #include "ShootingGameCharacter.generated.h"

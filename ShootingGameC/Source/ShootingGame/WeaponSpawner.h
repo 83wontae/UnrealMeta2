@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ShootingGame.h"
 #include "GameFramework/Actor.h"
 #include "WeaponSpawner.generated.h"
 

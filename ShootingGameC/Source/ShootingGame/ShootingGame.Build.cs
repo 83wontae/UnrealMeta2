@@ -8,6 +8,8 @@ public class ShootingGame : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "ItemPlugin" });
-	}
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "ItemPlugin", "OnlineSubsystem", "OnlineSubsystemUtils" });
+
+        DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
+    }
 }

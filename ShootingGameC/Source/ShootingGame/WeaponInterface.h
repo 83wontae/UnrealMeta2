@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "ShootingGame.h"
 #include "UObject/Interface.h"
 #include "WeaponInterface.generated.h"
 
