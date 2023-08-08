@@ -13,6 +13,10 @@ class AShootingGameGameMode : public AGameModeBase
 
 public:
 	AShootingGameGameMode();
+
+	void CreateOnlineSession();
+
+	void FindOnlineSessions();
 };
 
 

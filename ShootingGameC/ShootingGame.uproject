@@ -14,9 +14,13 @@
 		}
 	],
 	"Plugins": [
-        {
-            "Name": "ItemPlugin",
-            "Enabled": true
-        }
-    ]
+		{
+			"Name": "ItemPlugin",
+			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemEOS",
+			"Enabled": true
+		}
+	]
 }
